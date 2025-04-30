@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 699137032b51ac14085b8e65a17adc8d, type: 3}
+  m_Name: QAP-003 Masked Trickmage
+  m_EditorClassIdentifier: 
+  cardType: 0
+  rarity: 0
+  waifuName: Masked Trickmage
+  reign: 0
+  summonType: 0
+  role: 13
+  element: 7
+  artwork: {fileID: 21300000, guid: 89906b29d2a424c449ee9147b8c26819, type: 3}
+  level: 0
+  attack: 2
+  ambush: 10
+  effects:
+  - triggers: 09000000
+    effectType: 1
+    effectDescription: 'Revenge: Defeat 1 waifu on the field.'
+    defeatEffect:
+      targetType: 2
+      targetSide: 0
+      amount: 1
+      filters: []
+      situationalHighLow: 0
+      situationalStat: 0
+      situationalTieBreaker: 0
+    sendWaifuEffect:
+      destination: 0
+      selectionType: 0
+      targetSide: 0
+      amount: 0
+      filters: []
+      highLow: 0
+      compareStat: 0
+      tieBreaker: 0
+    sendHandEffect:
+      destination: 1
+      amount: 1
+      targetSide: 0
+      filterCardTypes: 
+    healBurnEffect:
+      action: 0
+      targetSide: 0
+      amount: 0

@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 699137032b51ac14085b8e65a17adc8d, type: 3}
+  m_Name: QAP-001 Merlina
+  m_EditorClassIdentifier: 
+  cardType: 0
+  rarity: 3
+  waifuName: Merlina
+  reign: 0
+  summonType: 1
+  role: 13
+  element: 9
+  artwork: {fileID: 21300000, guid: efe55257db8495140850b14dc3018d7e, type: 3}
+  level: 2
+  attack: 23
+  ambush: 20
+  effects: []

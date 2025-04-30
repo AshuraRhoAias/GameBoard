@@ -1,0 +1,56 @@
+# ========== Unity ==========
+
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+MemoryCaptures/
+UserSettings/
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+*.pidb.meta
+*.bak
+*.backup
+*.swp
+*.swn
+
+# ========== Visual Studio ==========
+
+.vscode/
+.vs/
+*.code-workspace
+
+# ========== OS/General ==========
+
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Icon?
+Desktop.ini
+$RECYCLE.BIN/
+*.stackdump
+
+# ========== GitHub Specific ==========
+
+# Ignore Git LFS pointer files if any
+*.lfs
+
+# ========== Custom Ignored Folder ==========
+
+
+# (optional) If you want to ignore only certain files inside but not the folder itself,
+# you can be more specific, but here we ignore everything inside WaifuSummoner completely.
