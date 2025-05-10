@@ -1,15 +1,15 @@
 ﻿// Assets/WaifuSummoner/Scripts/Developer Data Manager/Editor/Tabs/CollectionEffectDrawers/ProtectionEffectDrawer.cs
 #if UNITY_EDITOR
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
 [EffectDrawer(EffectType.Protection, "protectionEffect")]
 public class ProtectionEffectDrawer : IEffectDrawer
 {
-    // 1) Qué opciones permitir por cada ProtectionTarget
+    // Define qué opciones están permitidas según el tipo de protección
     private static ProtectionOption[] GetAllowedOptions(ProtectionTarget target)
     {
         switch (target)
@@ -52,145 +52,126 @@ public class ProtectionEffectDrawer : IEffectDrawer
     {
         if (prop == null) return;
 
-        // — 1) ProtectionTarget —
-        var tp = prop.FindPropertyRelative("protectionTarget");
-        EditorGUILayout.PropertyField(tp, new GUIContent("Protect"));
-        var protTarget = (ProtectionTarget)tp.enumValueIndex;
+        // 1) ProtectionTarget
+        var protProp = prop.FindPropertyRelative("protectionTarget");
+        if (protProp == null) return;
+        EditorGUILayout.PropertyField(protProp, new GUIContent("Protect"));
+        var protTarget = (ProtectionTarget)protProp.enumValueIndex;
         if (protTarget == ProtectionTarget.None) return;
 
-        // — 2) ProtectionOptions (filtradas) —
-        var opts = prop.FindPropertyRelative("options");
-        if (opts.isArray)
+        // 2) Protection Options (siempre visibles)
+        var optsProp = prop.FindPropertyRelative("options");
+        if (optsProp != null && optsProp.isArray)
         {
             EditorGUILayout.LabelField("Options", EditorStyles.boldLabel);
             var allowed = GetAllowedOptions(protTarget);
-
-            // collect used
-            var usedOpts = Enumerable.Range(0, opts.arraySize)
-                                     .Select(i => (ProtectionOption)opts.GetArrayElementAtIndex(i).enumValueIndex)
-                                     .ToList();
+            var used = Enumerable.Range(0, optsProp.arraySize)
+                                 .Select(i => (ProtectionOption)optsProp.GetArrayElementAtIndex(i).enumValueIndex)
+                                 .ToList();
 
             int removeOpt = -1;
-            for (int i = 0; i < opts.arraySize; i++)
+            for (int i = 0; i < optsProp.arraySize; i++)
             {
-                var elemProp = opts.GetArrayElementAtIndex(i);
-                var current = (ProtectionOption)elemProp.enumValueIndex;
-
-                // build choice list = allowed + current
-                var choices = allowed
-                    .Union(new[] { current })
-                    .Distinct()
-                    .ToArray();
-
-                var labels = choices.Select(e => e.ToString()).ToArray();
-                int currentIndex = Array.IndexOf(choices, current);
+                var elem = optsProp.GetArrayElementAtIndex(i);
+                var current = (ProtectionOption)elem.enumValueIndex;
+                var choices = allowed.Union(new[] { current }).Distinct().ToArray();
+                var labels = choices.Select(c => c.ToString()).ToArray();
+                int idx = Array.IndexOf(choices, current);
 
                 EditorGUILayout.BeginHorizontal();
-                int newIndex = EditorGUILayout.Popup(currentIndex, labels);
-                elemProp.enumValueIndex = (int)choices[newIndex];
+                int sel = EditorGUILayout.Popup(idx, labels);
+                elem.enumValueIndex = (int)choices[sel];
                 if (GUILayout.Button("✕", GUILayout.Width(20)))
                     removeOpt = i;
                 EditorGUILayout.EndHorizontal();
             }
-
             if (removeOpt >= 0)
-                opts.DeleteArrayElementAtIndex(removeOpt);
+                optsProp.DeleteArrayElementAtIndex(removeOpt);
 
-            // "+ Add Option"
-            var avail = allowed.Except(usedOpts).ToList();
+            var avail = allowed.Except(used).ToList();
             if (avail.Count > 0 && GUILayout.Button("+ Add Option"))
             {
-                opts.InsertArrayElementAtIndex(opts.arraySize);
-                opts.GetArrayElementAtIndex(opts.arraySize - 1).enumValueIndex = (int)avail[0];
+                optsProp.InsertArrayElementAtIndex(optsProp.arraySize);
+                optsProp.GetArrayElementAtIndex(optsProp.arraySize - 1).enumValueIndex = (int)avail[0];
             }
         }
 
-        // — 3) Si protegemos cartas, abrimos selector de cartas —
+        // 3) Si protegemos cartas, mostramos Targets / Target Side / Amount / Situational
         bool isCard = protTarget == ProtectionTarget.AnyCard
                    || protTarget == ProtectionTarget.Waifu
                    || protTarget == ProtectionTarget.Enchantment
                    || protTarget == ProtectionTarget.EnchantmentMood
                    || protTarget == ProtectionTarget.Mood;
-
         if (isCard)
         {
             // 3.1) Card Targets
-            var ct = prop.FindPropertyRelative("cardTarget");
-            EditorGUILayout.PropertyField(ct, new GUIContent("Card Targets"));
-            var cardTarget = (Target)ct.enumValueIndex;
-            if (cardTarget == Target.None) return;
-
-            // 3.2) Target Side
-            EditorGUILayout.PropertyField(
-                prop.FindPropertyRelative("targetSide"),
-                new GUIContent("Target Side")
-            );
-
-            // 3.3) Amount
-            if (cardTarget == Target.Select
-             || cardTarget == Target.Random
-             || cardTarget == Target.Situational)
+            var cardTgtProp = prop.FindPropertyRelative("cardTarget");
+            if (cardTgtProp != null)
             {
-                var amt = prop.FindPropertyRelative("amount");
-                amt.intValue = Mathf.Max(1, amt.intValue);
-                EditorGUILayout.PropertyField(amt, new GUIContent("Amount"));
+                EditorGUILayout.PropertyField(cardTgtProp, new GUIContent("Targets"));
+                var cardTgt = (Target)cardTgtProp.enumValueIndex;
+                if (cardTgt == Target.None)
+                    return;
+
+                // 3.2) Target Side
+                var sideProp = prop.FindPropertyRelative("targetSide");
+                if (sideProp != null)
+                    EditorGUILayout.PropertyField(sideProp, new GUIContent("Target Side"));
+
+                // 3.3) Amount
+                if (cardTgt == Target.Select || cardTgt == Target.Random || cardTgt == Target.Situational)
+                {
+                    var amtProp = prop.FindPropertyRelative("amount");
+                    if (amtProp != null)
+                    {
+                        amtProp.intValue = Mathf.Max(1, amtProp.intValue);
+                        EditorGUILayout.PropertyField(amtProp, new GUIContent("Amount"));
+                    }
+                }
+
+                // 3.4) Situational extras
+                if (cardTgt == Target.Situational)
+                {
+                    var hlProp = prop.FindPropertyRelative("highLow");
+                    var stProp = prop.FindPropertyRelative("situationalStat");
+                    var tbProp = prop.FindPropertyRelative("tieBreaker");
+                    if (hlProp != null) EditorGUILayout.PropertyField(hlProp, new GUIContent("Highest / Lowest"));
+                    if (stProp != null) EditorGUILayout.PropertyField(stProp, new GUIContent("Stat to Compare"));
+                    if (tbProp != null) EditorGUILayout.PropertyField(tbProp, new GUIContent("Tie Breaker"));
+                }
             }
 
-            // 3.4) Situational extras
-            if (cardTarget == Target.Situational)
-            {
-                EditorGUILayout.PropertyField(
-                    prop.FindPropertyRelative("highLow"),
-                    new GUIContent("Highest / Lowest")
-                );
-                EditorGUILayout.PropertyField(
-                    prop.FindPropertyRelative("situationalStat"),
-                    new GUIContent("Stat to Compare")
-                );
-                EditorGUILayout.PropertyField(
-                    prop.FindPropertyRelative("tieBreaker"),
-                    new GUIContent("Tie Breaker")
-                );
-            }
-
-            // — 4) Filters dinámicos (solo Waifu) —
+            // 3.5) Waifu-only filters
             if (protTarget == ProtectionTarget.Waifu)
             {
-                var wf = prop.FindPropertyRelative("filters");
-                if (wf.isArray)
+                var filtProp = prop.FindPropertyRelative("filters");
+                if (filtProp != null && filtProp.isArray)
                 {
                     EditorGUILayout.Space();
                     EditorGUILayout.LabelField("Waifu Filters", EditorStyles.boldLabel);
 
-                    var usedF = new List<ProtectionFilterType>();
-                    for (int i = 0; i < wf.arraySize; i++)
-                    {
-                        var entry = wf.GetArrayElementAtIndex(i);
-                        var ftProp = entry.FindPropertyRelative("filterType");
-                        usedF.Add((ProtectionFilterType)ftProp.enumValueIndex);
-                    }
-
+                    var usedFilt = Enumerable.Range(0, filtProp.arraySize)
+                                             .Select(i => (ProtectionFilterType)filtProp
+                                                 .GetArrayElementAtIndex(i)
+                                                 .FindPropertyRelative("filterType")
+                                                 .enumValueIndex)
+                                             .ToList();
                     int removeF = -1;
-                    for (int i = 0; i < wf.arraySize; i++)
+                    for (int i = 0; i < filtProp.arraySize; i++)
                     {
-                        var entry = wf.GetArrayElementAtIndex(i);
+                        var entry = filtProp.GetArrayElementAtIndex(i);
                         var ftProp = entry.FindPropertyRelative("filterType");
-                        var current = (ProtectionFilterType)ftProp.enumValueIndex;
+                        var cur = (ProtectionFilterType)ftProp.enumValueIndex;
 
-                        // build filter choices
-                        var allF = Enum.GetValues(typeof(ProtectionFilterType))
-                                       .Cast<ProtectionFilterType>();
-                        var choicesF = allF
-                            .Except(usedF.Where((_, idx) => idx != i))
-                            .ToArray();
-                        var labelsF = choicesF.Select(e => e.ToString()).ToArray();
-                        int idxF = Array.IndexOf(choicesF, current);
+                        var allF = Enum.GetValues(typeof(ProtectionFilterType)).Cast<ProtectionFilterType>();
+                        var choicesF = allF.Except(usedFilt.Where((_, idx) => idx != i)).ToArray();
+                        var labelsF = choicesF.Select(c => c.ToString()).ToArray();
+                        int idxF = Array.IndexOf(choicesF, cur);
 
                         EditorGUILayout.BeginHorizontal();
-                        int newF = EditorGUILayout.Popup(idxF, labelsF, GUILayout.Width(100));
-                        ftProp.enumValueIndex = (int)choicesF[newF];
+                        int selF = EditorGUILayout.Popup(idxF, labelsF, GUILayout.Width(100));
+                        ftProp.enumValueIndex = (int)choicesF[selF];
 
-                        // draw the value field
                         switch ((ProtectionFilterType)ftProp.enumValueIndex)
                         {
                             case ProtectionFilterType.SummonCondition:
@@ -211,18 +192,17 @@ public class ProtectionEffectDrawer : IEffectDrawer
                             removeF = i;
                         EditorGUILayout.EndHorizontal();
                     }
-
                     if (removeF >= 0)
-                        wf.DeleteArrayElementAtIndex(removeF);
+                        filtProp.DeleteArrayElementAtIndex(removeF);
 
                     var availF = Enum.GetValues(typeof(ProtectionFilterType))
                                      .Cast<ProtectionFilterType>()
-                                     .Except(usedF)
+                                     .Except(usedFilt)
                                      .ToList();
                     if (availF.Count > 0 && GUILayout.Button("+ Add Filter"))
                     {
-                        wf.InsertArrayElementAtIndex(wf.arraySize);
-                        var ne = wf.GetArrayElementAtIndex(wf.arraySize - 1);
+                        filtProp.InsertArrayElementAtIndex(filtProp.arraySize);
+                        var ne = filtProp.GetArrayElementAtIndex(filtProp.arraySize - 1);
                         ne.FindPropertyRelative("filterType").enumValueIndex = (int)availF[0];
                         ne.FindPropertyRelative("summonCondition").enumValueIndex = 0;
                         ne.FindPropertyRelative("roleFilter").enumValueIndex = 0;
@@ -233,28 +213,33 @@ public class ProtectionEffectDrawer : IEffectDrawer
             }
         }
 
-        // — 5) Duración (siempre) —
+        // 4) Duration
         EditorGUILayout.Space();
-        EditorGUILayout.PropertyField(
-            prop.FindPropertyRelative("duration"),
-            new GUIContent("Duration")
-        );
-        var dur = (Duration)prop.FindPropertyRelative("duration").enumValueIndex;
-        if (dur == Duration.UntilTheNext)
+        var durProp = prop.FindPropertyRelative("duration");
+        if (durProp != null)
         {
-            EditorGUILayout.PropertyField(
-                prop.FindPropertyRelative("untilStage"),
-                new GUIContent("Until Stage")
-            );
-            var t = prop.FindPropertyRelative("durationTurns");
-            t.intValue = Mathf.Max(1, t.intValue);
-            EditorGUILayout.PropertyField(t, new GUIContent("Turns"));
-        }
-        else if (dur == Duration.ForNumberTurns || dur == Duration.ForNumberOfYourTurns)
-        {
-            var t2 = prop.FindPropertyRelative("durationTurns");
-            t2.intValue = Mathf.Max(1, t2.intValue);
-            EditorGUILayout.PropertyField(t2, new GUIContent("Turns"));
+            EditorGUILayout.PropertyField(durProp, new GUIContent("Duration"));
+            var dur = (Duration)durProp.enumValueIndex;
+            if (dur == Duration.UntilTheNext)
+            {
+                var stageProp = prop.FindPropertyRelative("untilStage");
+                var turnsProp = prop.FindPropertyRelative("durationTurns");
+                if (stageProp != null) EditorGUILayout.PropertyField(stageProp, new GUIContent("Until Stage"));
+                if (turnsProp != null)
+                {
+                    turnsProp.intValue = Mathf.Max(1, turnsProp.intValue);
+                    EditorGUILayout.PropertyField(turnsProp, new GUIContent("Turns"));
+                }
+            }
+            else if (dur == Duration.ForNumberTurns || dur == Duration.ForNumberOfYourTurns)
+            {
+                var turns2 = prop.FindPropertyRelative("durationTurns");
+                if (turns2 != null)
+                {
+                    turns2.intValue = Mathf.Max(1, turns2.intValue);
+                    EditorGUILayout.PropertyField(turns2, new GUIContent("Turns"));
+                }
+            }
         }
     }
 }

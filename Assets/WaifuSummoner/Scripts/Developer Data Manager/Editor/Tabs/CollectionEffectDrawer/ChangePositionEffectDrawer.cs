@@ -1,4 +1,5 @@
-﻿#if UNITY_EDITOR
+﻿// Assets/WaifuSummoner/Scripts/Developer Data Manager/Editor/Drawers/ChangePositionEffectDrawer.cs
+#if UNITY_EDITOR
 using System;
 using System.Linq;
 using UnityEditor;
@@ -21,21 +22,26 @@ public class ChangePositionEffectDrawer : IEffectDrawer
         var target = (Target)targetProp.enumValueIndex;
         if (target == Target.None) return;
 
-        // 2) Target Side (no aplica en Self si lo tuvieses)
-        EditorGUILayout.PropertyField(
-            prop.FindPropertyRelative("targetSide"),
-            new GUIContent("Target Side")
-        );
+        // 2) Target Side (no aplica si es Self)
+        if (target != Target.Self)
+        {
+            EditorGUILayout.PropertyField(
+                prop.FindPropertyRelative("targetSide"),
+                new GUIContent("Target Side")
+            );
+        }
 
         // 3) Amount (solo Select/Random/Situational)
-        if (target == Target.Select || target == Target.Random || target == Target.Situational)
+        if (target == Target.Select
+         || target == Target.Random
+         || target == Target.Situational)
         {
             var amtProp = prop.FindPropertyRelative("amount");
             amtProp.intValue = Mathf.Max(1, amtProp.intValue);
             EditorGUILayout.PropertyField(amtProp, new GUIContent("Amount"));
         }
 
-        // 4) Situational (solo si target == Situational)
+        // 4) Situational extras
         if (target == Target.Situational)
         {
             EditorGUILayout.PropertyField(
@@ -68,7 +74,8 @@ public class ChangePositionEffectDrawer : IEffectDrawer
             turnsU.intValue = Mathf.Max(1, turnsU.intValue);
             EditorGUILayout.PropertyField(turnsU, new GUIContent("Turns"));
         }
-        else if (dur == Duration.ForNumberTurns || dur == Duration.ForNumberOfYourTurns)
+        else if (dur == Duration.ForNumberTurns
+              || dur == Duration.ForNumberOfYourTurns)
         {
             var turns = prop.FindPropertyRelative("durationTurns");
             turns.intValue = Mathf.Max(1, turns.intValue);
@@ -82,7 +89,6 @@ public class ChangePositionEffectDrawer : IEffectDrawer
             EditorGUILayout.Space();
             EditorGUILayout.LabelField("Filters", EditorStyles.boldLabel);
 
-            // Recoger tipos ya usados
             var used = Enumerable.Range(0, filtersProp.arraySize)
                 .Select(i => (ChangePositionFilterType)filtersProp
                     .GetArrayElementAtIndex(i)
@@ -99,6 +105,7 @@ public class ChangePositionEffectDrawer : IEffectDrawer
 
                 EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.PropertyField(ftProp, GUIContent.none, GUILayout.Width(100));
+
                 switch ((ChangePositionFilterType)ftProp.enumValueIndex)
                 {
                     case ChangePositionFilterType.SummonCondition:
@@ -122,6 +129,7 @@ public class ChangePositionEffectDrawer : IEffectDrawer
                             GUIContent.none);
                         break;
                 }
+
                 if (GUILayout.Button("✕", GUILayout.Width(20)))
                     removeIdx = i;
                 EditorGUILayout.EndHorizontal();
@@ -130,7 +138,6 @@ public class ChangePositionEffectDrawer : IEffectDrawer
             if (removeIdx >= 0)
                 filtersProp.DeleteArrayElementAtIndex(removeIdx);
 
-            // + Add Filter mientras queden tipos libres
             var allTypes = Enum.GetValues(typeof(ChangePositionFilterType))
                                .Cast<ChangePositionFilterType>();
             var available = allTypes.Except(used).ToList();

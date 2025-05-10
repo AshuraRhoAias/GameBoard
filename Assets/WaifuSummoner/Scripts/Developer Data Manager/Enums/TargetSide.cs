@@ -1,10 +1,9 @@
-public enum TargetSide
+namespace WaifuSummoner.Enums
 {
-    Both,
-    Enemy,
-    User,
+    public enum TargetSide
+    {
+        Both,
+        Enemy,
+        User,
+    }
 }
-
-
-
-

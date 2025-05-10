@@ -1,6 +1,9 @@
-public enum StatType
+namespace WaifuSummoner.Enums
 {
-    Attack,
-    Ambush,
-    Level
+    public enum StatType
+    {
+        Attack,
+        Ambush,
+        Level
+    }
 }

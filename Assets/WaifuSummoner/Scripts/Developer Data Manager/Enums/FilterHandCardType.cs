@@ -1,5 +1,8 @@
-public enum FilterHandCardType
+namespace WaifuSummoner.Enums
 {
-    None,
-    CardType
+    public enum FilterHandCardType
+    {
+        None,
+        CardType
+    }
 }

@@ -1,9 +1,12 @@
 using UnityEngine;
 
-public enum Rarity
+namespace WaifuSummoner.Enums
 {
-    Common,     // Normal cards
-    Spicy,      // Rare (R)
-    Naughty,    // Super Rare (SR)
-    Radiant     // Ultra Rare (UR)
+    public enum Rarity
+    {
+        Common,     // Normal cards
+        Spicy,      // Rare (R)
+        Naughty,    // Super Rare (SR)
+        Radiant     // Ultra Rare (UR)
+    }
 }

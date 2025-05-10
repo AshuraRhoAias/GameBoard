@@ -1,7 +1,10 @@
-public enum TieBreaker
+namespace WaifuSummoner.Enums
 {
-    All,
-    Random,
-    Select,
-    EnemySelects
+    public enum TieBreaker
+    {
+        All,
+        Random,
+        Select,
+        EnemySelects
+    }
 }

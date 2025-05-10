@@ -1,6 +1,9 @@
-public enum WaifuStats
+namespace WaifuSummoner.Enums
 {
-    Attack,
-    AP,
-    Level
+    public enum WaifuStats
+    {
+        Attack,
+        AP,
+        Level
+    }
 }

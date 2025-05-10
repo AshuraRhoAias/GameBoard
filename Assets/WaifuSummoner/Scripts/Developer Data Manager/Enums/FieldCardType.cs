@@ -1,8 +1,11 @@
-public enum FieldCardType
+namespace WaifuSummoner.Enums
 {
-    Any,
-    Waifu,
-    Enchantment,
-    Mood,
-    EnchantmentMood,
+    public enum FieldCardType
+    {
+        Any,
+        Waifu,
+        Enchantment,
+        Mood,
+        EnchantmentMood,
+    }
 }

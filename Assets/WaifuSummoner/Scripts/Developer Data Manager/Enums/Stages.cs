@@ -1,9 +1,12 @@
-public enum Stages
+namespace WaifuSummoner.Enums
 {
-    None,
-    DrawStage,
-    StrikeStage,
-    ActionStage,
-    BattleStage,
-    EndingStage,
+    public enum Stages
+    {
+        None,
+        DrawStage,
+        StrikeStage,
+        ActionStage,
+        BattleStage,
+        EndingStage,
+    }
 }

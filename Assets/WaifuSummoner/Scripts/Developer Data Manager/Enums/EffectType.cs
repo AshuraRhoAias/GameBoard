@@ -1,18 +1,22 @@
-public enum EffectType
+namespace WaifuSummoner.Enums
 {
-    None,
-    Defeat,
-    SendWaifu,
-    HealBurn,
-    SendHand,
-    ModifyStats,
-    EnchantSummon,
-    DrawSearch,
-    Stun,
-    Control,
-    NegateEffect,
-    MultiAttacks,
-    ChangePosition,
-    Protection,
-    Recycle,
+    public enum EffectType
+    {
+        None,
+        Defeat,
+        SendWaifu,
+        HealBurn,
+        SendHand,
+        ModifyStats,
+        EnchantSummon,
+        DrawSearch,
+        Stun,
+        Control,
+        NegateEffect,
+        MultiAttacks,
+        ChangePosition,
+        Protection,
+        Recycle
+    }
+
 }

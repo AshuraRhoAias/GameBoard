@@ -1,13 +1,16 @@
-public enum Search
+namespace WaifuSummoner.Enums
 {
-    None,
-    UserDeck,
-    OpponentDeck,
-    BothDecks,
-    UserDungeon,
-    OpponentDungeon,
-    BothDungeons,
-    OpponentDeckAndDungeon,
-    UserDeckAndDungeon,
-    BothDeckAndDungeon,
+    public enum Search
+    {
+        None,
+        UserDeck,
+        OpponentDeck,
+        BothDecks,
+        UserDungeon,
+        OpponentDungeon,
+        BothDungeons,
+        OpponentDeckAndDungeon,
+        UserDeckAndDungeon,
+        BothDeckAndDungeon,
+    }
 }

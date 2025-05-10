@@ -1,10 +1,13 @@
-public enum Duration
+namespace WaifuSummoner.Enums
 {
-    None,
-    ThisTurn,
-    UntilTheNext,
-    ForNumberTurns,
-    ForNumberOfYourTurns,
-    WhileThisCardFaceup,
-    Permanent,
+    public enum Duration
+    {
+        None,
+        ThisTurn,
+        UntilTheNext,
+        ForNumberTurns,
+        ForNumberOfYourTurns,
+        WhileThisCardFaceup,
+        Permanent,
+    }
 }

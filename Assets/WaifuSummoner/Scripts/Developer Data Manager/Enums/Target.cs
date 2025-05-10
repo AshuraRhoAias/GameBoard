@@ -1,11 +1,12 @@
-﻿// Assets/Scripts/Enums/DefeatTargetType.cs
-public enum Target
+﻿namespace WaifuSummoner.Enums
 {
-    None,       // <— primer valor por defecto
-    All,
-    Select,
-    Random,
-    Situational,
-    Self
+    public enum Target
+    {
+        None,       // <— primer valor por defecto
+        All,
+        Select,
+        Random,
+        Situational,
+        Self
+    }
 }
-

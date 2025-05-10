@@ -1,6 +1,9 @@
-public enum SummonCondition
+namespace WaifuSummoner.Enums
 {
-    LibidoSummon,
-    EnchantmentSummon,
-    SeductionSummon
+    public enum SummonCondition
+    {
+        LibidoSummon,
+        EnchantmentSummon,
+        SeductionSummon
+    }
 }

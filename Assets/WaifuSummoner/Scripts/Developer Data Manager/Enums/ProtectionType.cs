@@ -1,10 +1,13 @@
-public enum ProtectionType
+namespace WaifuSummoner.Enums
 {
-    BattleIndestructible,
-    EffectIndestructible,
-    CannotBeTargeted,
-    PreventBattleDamage,
-    LibidoDamageImmunity,
-    HandManipulationImmunity,
-    DeckManipulationImmunity,
+    public enum ProtectionType
+    {
+        BattleIndestructible,
+        EffectIndestructible,
+        CannotBeTargeted,
+        PreventBattleDamage,
+        LibidoDamageImmunity,
+        HandManipulationImmunity,
+        DeckManipulationImmunity,
+    }
 }

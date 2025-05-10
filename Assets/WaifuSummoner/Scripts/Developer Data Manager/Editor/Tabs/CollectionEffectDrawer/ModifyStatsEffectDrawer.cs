@@ -34,7 +34,7 @@ public class ModifyStatsEffectDrawer : IEffectDrawer
         var tt = (Target)tgtProp.enumValueIndex;
         if (tt == Target.None) return;
 
-        // 5) Count
+        // 5) Count (solo Select/Random/Situational)
         if (tt == Target.Select || tt == Target.Random || tt == Target.Situational)
         {
             var amtProp = mProp.FindPropertyRelative("amount");
@@ -59,90 +59,102 @@ public class ModifyStatsEffectDrawer : IEffectDrawer
             );
         }
 
-        // 7) Target Side
-        EditorGUILayout.PropertyField(
-            mProp.FindPropertyRelative("targetSide"),
-            new GUIContent("Target Side")
-        );
-
-        // 8) Dynamic Filters
-        var filtersProp = mProp.FindPropertyRelative("filters");
-        if (filtersProp != null && filtersProp.isArray)
+        // 7) Target Side (¡no para Self!)
+        if (tt != Target.Self)
         {
-            EditorGUILayout.Space();
-            EditorGUILayout.LabelField("Filters", EditorStyles.boldLabel);
+            EditorGUILayout.PropertyField(
+                mProp.FindPropertyRelative("targetSide"),
+                new GUIContent("Target Side")
+            );
+        }
 
-            // track used filter types
-            var used = Enumerable.Range(0, filtersProp.arraySize)
-                .Select(i => (ModifyStatsFilterType)filtersProp
-                    .GetArrayElementAtIndex(i)
-                    .FindPropertyRelative("filterType")
-                    .enumValueIndex)
-                .ToList();
+        // 8) Duration
+        var durProp = mProp.FindPropertyRelative("duration");
+        EditorGUILayout.PropertyField(durProp, new GUIContent("Duration"));
+        var dur = (Duration)durProp.enumValueIndex;
+        if (dur == Duration.ForNumberTurns || dur == Duration.ForNumberOfYourTurns)
+        {
+            var turnsProp = mProp.FindPropertyRelative("durationTurns");
+            turnsProp.intValue = Mathf.Max(1, turnsProp.intValue);
+            string label = dur == Duration.ForNumberTurns ? "Turns" : "Your Turns";
+            EditorGUILayout.PropertyField(turnsProp, new GUIContent($"  {label}"));
+        }
 
-            int removeIdx = -1;
-            for (int i = 0; i < filtersProp.arraySize; i++)
+        // 9) Dynamic Filters (no para Self tampoco)
+        if (tt != Target.Self)
+        {
+            var filtersProp = mProp.FindPropertyRelative("filters");
+            if (filtersProp != null && filtersProp.isArray)
             {
-                var entry = filtersProp.GetArrayElementAtIndex(i);
-                var ftProp = entry.FindPropertyRelative("filterType");
-                if (ftProp == null) continue;
+                EditorGUILayout.Space();
+                EditorGUILayout.LabelField("Filters", EditorStyles.boldLabel);
 
-                EditorGUILayout.BeginHorizontal();
-                EditorGUILayout.PropertyField(ftProp, GUIContent.none, GUILayout.Width(100));
+                var used = Enumerable.Range(0, filtersProp.arraySize)
+                    .Select(i => (ModifyStatsFilterType)filtersProp
+                        .GetArrayElementAtIndex(i)
+                        .FindPropertyRelative("filterType")
+                        .enumValueIndex)
+                    .ToList();
 
-                switch ((ModifyStatsFilterType)ftProp.enumValueIndex)
+                int removeIdx = -1;
+                for (int i = 0; i < filtersProp.arraySize; i++)
                 {
-                    case ModifyStatsFilterType.SummonCondition:
-                        EditorGUILayout.PropertyField(
-                            entry.FindPropertyRelative("summonConditionFilter"),
-                            GUIContent.none
-                        );
-                        break;
-                    case ModifyStatsFilterType.Role:
-                        EditorGUILayout.PropertyField(
-                            entry.FindPropertyRelative("roleFilter"),
-                            GUIContent.none
-                        );
-                        break;
-                    case ModifyStatsFilterType.Element:
-                        EditorGUILayout.PropertyField(
-                            entry.FindPropertyRelative("elementFilter"),
-                            GUIContent.none
-                        );
-                        break;
-                    case ModifyStatsFilterType.Reign:
-                        EditorGUILayout.PropertyField(
-                            entry.FindPropertyRelative("reignFilter"),
-                            GUIContent.none
-                        );
-                        break;
+                    var entry = filtersProp.GetArrayElementAtIndex(i);
+                    var ftProp = entry.FindPropertyRelative("filterType");
+                    if (ftProp == null) continue;
+
+                    EditorGUILayout.BeginHorizontal();
+                    EditorGUILayout.PropertyField(ftProp, GUIContent.none, GUILayout.Width(100));
+                    switch ((ModifyStatsFilterType)ftProp.enumValueIndex)
+                    {
+                        case ModifyStatsFilterType.SummonCondition:
+                            EditorGUILayout.PropertyField(
+                                entry.FindPropertyRelative("summonConditionFilter"),
+                                GUIContent.none
+                            );
+                            break;
+                        case ModifyStatsFilterType.Role:
+                            EditorGUILayout.PropertyField(
+                                entry.FindPropertyRelative("roleFilter"),
+                                GUIContent.none
+                            );
+                            break;
+                        case ModifyStatsFilterType.Element:
+                            EditorGUILayout.PropertyField(
+                                entry.FindPropertyRelative("elementFilter"),
+                                GUIContent.none
+                            );
+                            break;
+                        case ModifyStatsFilterType.Reign:
+                            EditorGUILayout.PropertyField(
+                                entry.FindPropertyRelative("reignFilter"),
+                                GUIContent.none
+                            );
+                            break;
+                    }
+                    if (GUILayout.Button("✕", GUILayout.Width(20)))
+                        removeIdx = i;
+                    EditorGUILayout.EndHorizontal();
                 }
 
-                if (GUILayout.Button("✕", GUILayout.Width(20)))
-                    removeIdx = i;
-                EditorGUILayout.EndHorizontal();
-            }
+                if (removeIdx >= 0)
+                    filtersProp.DeleteArrayElementAtIndex(removeIdx);
 
-            if (removeIdx >= 0)
-                filtersProp.DeleteArrayElementAtIndex(removeIdx);
+                var allTypes = Enum.GetValues(typeof(ModifyStatsFilterType)).Cast<ModifyStatsFilterType>();
+                var available = allTypes.Except(used).ToList();
+                if (available.Count > 0 && GUILayout.Button("+ Add Filter"))
+                {
+                    filtersProp.InsertArrayElementAtIndex(filtersProp.arraySize);
+                    var newEntry = filtersProp.GetArrayElementAtIndex(filtersProp.arraySize - 1);
 
-            // + Add Filter
-            var allTypes = Enum.GetValues(typeof(ModifyStatsFilterType)).Cast<ModifyStatsFilterType>();
-            var available = allTypes.Except(used).ToList();
-            if (available.Count > 0 && GUILayout.Button("+ Add Filter"))
-            {
-                filtersProp.InsertArrayElementAtIndex(filtersProp.arraySize);
-                var newEntry = filtersProp.GetArrayElementAtIndex(filtersProp.arraySize - 1);
+                    var ftNew = newEntry.FindPropertyRelative("filterType");
+                    if (ftNew != null) ftNew.enumValueIndex = (int)available[0];
 
-                // set new filterType
-                var ftNew = newEntry.FindPropertyRelative("filterType");
-                if (ftNew != null) ftNew.enumValueIndex = (int)available[0];
-
-                // initialize all sub‐fields to 0
-                newEntry.FindPropertyRelative("summonConditionFilter").enumValueIndex = 0;
-                newEntry.FindPropertyRelative("roleFilter").enumValueIndex = 0;
-                newEntry.FindPropertyRelative("elementFilter").enumValueIndex = 0;
-                newEntry.FindPropertyRelative("reignFilter").enumValueIndex = 0;  // ← añadido
+                    newEntry.FindPropertyRelative("summonConditionFilter").enumValueIndex = 0;
+                    newEntry.FindPropertyRelative("roleFilter").enumValueIndex = 0;
+                    newEntry.FindPropertyRelative("elementFilter").enumValueIndex = 0;
+                    newEntry.FindPropertyRelative("reignFilter").enumValueIndex = 0;
+                }
             }
         }
     }

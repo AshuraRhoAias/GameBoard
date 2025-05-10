@@ -1,7 +1,10 @@
-public enum Control
+namespace WaifuSummoner.Enums
 {
-    None,
-    ChangeControl,
-    ReturnToOwner,
-    RemoveFromOwner,
+    public enum Control
+    {
+        None,
+        ChangeControl,
+        ReturnToOwner,
+        RemoveFromOwner,
+    }
 }

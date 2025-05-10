@@ -1,7 +1,10 @@
-public enum MultiAttackTypes
+namespace WaifuSummoner.Enums
 {
-    None,
-    NumberOfTimes,
-    NumberVsWaifus,
-    AllWaifus,
+    public enum MultiAttackTypes
+    {
+        None,
+        NumberOfTimes,
+        NumberVsWaifus,
+        AllWaifus,
+    }
 }

@@ -1,12 +1,15 @@
-public enum ProtectionTarget
+namespace WaifuSummoner.Enums
 {
-    None,
-    AnyCard,
-    Waifu,
-    Enchantment,
-    EnchantmentMood,
-    Mood,
-    Opponent,
-    User,
-    OpponentAndUser,
+    public enum ProtectionTarget
+    {
+        None,
+        AnyCard,
+        Waifu,
+        Enchantment,
+        EnchantmentMood,
+        Mood,
+        Opponent,
+        User,
+        OpponentAndUser,
+    }
 }

@@ -2,7 +2,7 @@ using System.Xml.Linq;
 using UnityEngine;
 
 [System.Serializable]
-public class TargetFilter
+public class CardTargetFilter
 {
     public TargetSide side;
     public bool useSummonCondition;
@@ -16,13 +16,11 @@ public class TargetFilter
 }
 
 [System.Serializable]
-public class TargetSelection
+public class TargetSelectionData
 {
     public Target mode;
-    public int quantity;  // For Select/Random
-    public TargetFilter filter;
-
-    // Situational only:
+    public int quantity;
+    public CardTargetFilter filter;
     public bool useSituational;
     public bool highest;
     public StatType stat;

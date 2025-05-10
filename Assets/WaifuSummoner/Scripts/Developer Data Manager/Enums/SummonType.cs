@@ -1,7 +1,10 @@
-﻿public enum SummonType
+﻿namespace WaifuSummoner.Enums
 {
-    None,           // Para nivel 0
-    Reinforcement,  // 💎
-    Hero,           // 🛡️
-    Villain         // 😈
+    public enum SummonType
+    {
+        None,           // Para nivel 0
+        Reinforcement,  // 💎
+        Hero,           // 🛡️
+        Villain         // 😈
+    }
 }

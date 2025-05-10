@@ -59,4 +59,10 @@ public class EffectData
     [EffectDataField(EffectType.Recycle)]
     public RecycleEffectData recycleEffect;
 
+    [EffectDataField(EffectType.SummonAid)]
+    public SummonAidEffectData summonAidEffect;
+
+    [EffectDataField(EffectType.DestroySend)]
+    public DestroySendEffectData destroySendEffect;
+
 }

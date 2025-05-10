@@ -1,6 +1,9 @@
-public enum DrawSearch
+namespace WaifuSummoner.Enums
 {
-    None,
-    Draw,
-    Search,
+    public enum DrawSearch
+    {
+        None,
+        Draw,
+        Search,
+    }
 }

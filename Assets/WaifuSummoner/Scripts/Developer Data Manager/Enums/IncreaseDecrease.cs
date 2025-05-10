@@ -1,7 +1,9 @@
-// Assets/Scripts/Enums/HealBurnAction.cs
-public enum IncreaseDecrease
+namespace WaifuSummoner.Enums
 {
-    None,
-    Increase,
-    Decrease
+    public enum IncreaseDecrease
+    {
+        None,
+        Increase,
+        Decrease
+    }
 }

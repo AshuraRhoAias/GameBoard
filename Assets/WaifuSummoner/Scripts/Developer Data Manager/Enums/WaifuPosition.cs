@@ -1,7 +1,10 @@
-public enum WaifuPosition
+namespace WaifuSummoner.Enums
 {
-    Attack,
-    AmbushFacedown,
-    AmbushFaceup,
-    Switch,
+    public enum WaifuPosition
+    {
+        Attack,
+        AmbushFacedown,
+        AmbushFaceup,
+        Switch
+    }
 }

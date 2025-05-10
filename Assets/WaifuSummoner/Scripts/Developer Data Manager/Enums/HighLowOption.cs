@@ -1,5 +1,8 @@
-public enum HighLowOption 
-{ 
-    Highest,
-    Lowest,
+namespace WaifuSummoner.Enums
+{
+    public enum HighLowOption
+    {
+        Highest,
+        Lowest
+    }
 }
